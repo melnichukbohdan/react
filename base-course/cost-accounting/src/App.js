@@ -1,6 +1,6 @@
 import './App.css';
 import Costs from "./components/Costs/Costs";
-import CostItem from "./components/CostItem/CostItem";
+import CostItem from "./components/Costs/CostItem/CostItem";
 
 const costs = [
     {
