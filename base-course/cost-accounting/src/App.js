@@ -1,28 +1,37 @@
 import './App.css';
 import Costs from "./components/Costs/Costs";
-import CostItem from "./components/Costs/CostItem/CostItem";
+import NewCost from "./components/NewCost/NewCost/NewCost";
 
-const costs = [
-    {
-        date: new Date(2021, 2, 12),
-        description: 'Computer',
-        amount: 999.99,
-    },
-    {
-        date: new Date(2021, 3, 15),
-        description: 'Phote',
-        amount: 499.99,
-    },
-    {
-        date: new Date(2021, 6, 14),
-        description: 'MacBook',
-        amount: 1250.99,
-    }
-]
 function App() {
+    const costs = [
+        {
+            id: 'c1',
+            date: new Date(2021, 2, 12),
+            description: 'Computer',
+            amount: 999.99,
+        },
+        {
+            id: 'c2',
+            date: new Date(2021, 3, 15),
+            description: 'Phote',
+            amount: 499.99,
+        },
+        {
+            id: 'c3',
+            date: new Date(2021, 6, 14),
+            description: 'MacBook',
+            amount: 1250.99,
+        }
+    ]
+
+    const addCosrHandler = (cost) => {
+        console.log(cost);
+        console.log('App component')
+    }
+
   return (
     <div>
-      <h1>Start learning React</h1>
+      <NewCost onAddCost={addCosrHandler} />
       <Costs costs={costs} />
     </div>
   );
