@@ -1,8 +1,8 @@
 import "./Costs.css"
-import CostItem from "./CostItem/CostItem";
 import Card from "../UI/Card/Card";
 import CostsFilter from "./CostFilter/CostsFilter";
 import React, {useState} from "react";
+import Costlist from "./CostList/Costlist";
 
 function Costs(props) {
     const [year, setYear] = useState('2023');
@@ -10,7 +10,7 @@ function Costs(props) {
         setYear(year)
     }
 
-    const filteredYear = props.costs.filter(cost => {
+    const filteredCosts = props.costs.filter(cost => {
         return cost.date.getFullYear().toString() === year;
     });
 
@@ -18,14 +18,32 @@ function Costs(props) {
         <div>
             <Card className='costs'>
                 <CostsFilter year={year} onChangeYear={yearChangeHandler} />
-                {filteredYear?.map((cost) => (
-                    <CostItem
-                        key={cost.id}
-                        date={cost.date}
-                        description={cost.description}
-                        amount={cost.amount
-                        }/>
-                ))}
+                {/* Ternary Operator */}
+                {/*{filteredCosts.length === 0 ? (*/}
+                {/*    <p>No costs this year</p>) : (*/}
+                {/*    filteredCosts?.map((cost) => (*/}
+                {/*        <CostItem*/}
+                {/*            key={cost.id}*/}
+                {/*            date={cost.date}*/}
+                {/*            description={cost.description}*/}
+                {/*            amount={cost.amount*/}
+                {/*        }/>*/}
+                {/*    ))*/}
+                {/*)}*/}
+
+                {/* Separated ternary operator into two logic if */}
+                {/*{filteredCosts.length === 0 &&  <p>No costs this year</p>}*/}
+                {/*{filteredCosts.length === 0 && filteredCosts?.map((cost) => (*/}
+                {/*    <CostItem*/}
+                {/*        key={cost.id}*/}
+                {/*        date={cost.date}*/}
+                {/*        description={cost.description}*/}
+                {/*        amount={cost.amount*/}
+                {/*    }/>*/}
+                {/*))}*/}
+
+                {/* Using variable */}
+                <Costlist costs={filteredCosts}/>
             </Card>
         </div>
     );
