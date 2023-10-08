@@ -54,7 +54,7 @@ const CostForm = (props) => {
         event.preventDefault();
 
         const costData = {
-            name: inputName,
+            description: inputName,
             amount: inputAmount,
             date: new Date(inputDate),
         }
@@ -86,7 +86,7 @@ const CostForm = (props) => {
                 <div className='new-cost__control'>
                     <label>Date</label>
                     <input type='date'
-                           min='2023-01-01'
+                           min='2021-01-01'
                            step='2024-12-31'
                            value={inputDate}
                            onChange={dateChangeHandler}/>
