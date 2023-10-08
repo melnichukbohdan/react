@@ -24,14 +24,14 @@ function App() {
         }
     ]
 
-    const addCosrHandler = (cost) => {
+    const addCostHandler = (cost) => {
         console.log(cost);
         console.log('App component')
     }
 
   return (
     <div>
-      <NewCost onAddCost={addCosrHandler} />
+      <NewCost onAddCost={addCostHandler} />
       <Costs costs={costs} />
     </div>
   );
