@@ -2,8 +2,6 @@ import React from 'react';
 import PostItem from "../PostItem/PostItem";
 
 const PostList = ({posts, title, remove}) => {
-    console.log(posts)
-
     return (
         <div>
             <h1 style={{textAlign:"center"}}>
