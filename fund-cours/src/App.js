@@ -1,30 +1,31 @@
-import React, {useState} from "react";
+import React, {useMemo, useState} from "react";
 import './styles/App.css';
 import PostList from "./components/PostList/PostList";
 import PostForm from "./components/UI/PostForm/PostForm";
-import MySelect from "./components/UI/Select/MySelect";
-import MyInput from "./components/UI/input/MyInput";
+import PostFilter from "./components/PostFilter/PostFilter";
 
 
-function App() {
+function App(factory, deps) {
     const [posts, setPosts] = useState([
         {id: 1, title: "AN", body: "bLa"},
         {id: 2, title: "PHP", body: "La"},
         {id: 3, title: "Java", body: "A"},
     ])
 
-    const [selectedSort, setSelectedSort] = useState('');
-    const [searchQuery, setSearchQuery] = useState('');
+    const [filter, setFilter] = useState({sort: '', query: ''})
 
-    function getSortedPosts() {
-        console.log('resort')
-        if(selectedSort) {
-            return [...posts].sort((a, b) => a[selectedSort].localeCompare(b[selectedSort]))
+    // This logic blocks call the resort of Posts array on entering in the Search input.
+    const sortedPosts = useMemo(() => {
+        if(filter.sort) {
+            return [...posts].sort((a, b) => a[filter.sort].localeCompare(b[filter.sort]))
         }
         return posts;
-    }
+    }, [filter.sort, posts]);
 
-    const sortedPost = getSortedPosts();
+    // Filters posts by search query.
+    const sortedAndSearchedPosts = useMemo(() => {
+        return sortedPosts.filter(post => post.title.toLowerCase().includes(filter.query.toLowerCase()))
+    }, [filter.query, sortedPosts]);
 
     const addPostHandler = (newPost) => {
         setPosts([...posts, newPost])
@@ -34,35 +35,15 @@ function App() {
         setPosts(posts.filter(p => p.id !== post.id))
     }
 
-    const sortPost = (sort) => {
-        setSelectedSort(sort)
-    }
-
   return (
     <div className="App">
         <PostForm onAddPost={addPostHandler} />
         <hr style={{margin: '15px 0'}} />
-        <div>
-            <MyInput
-                placeholder={'Search...'}
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-            />
-            <MySelect
-                defaultValue={'Sort by'}
-                options={[
-                    {value: 'title', name: 'Name'},
-                    {value: 'body', name: 'Description'},
-                ]}
-                value={selectedSort}
-                onChange={sortPost}
-            />
-        </div>
-        {posts.length !== 0
-            ? <PostList remove={removePost} posts={sortedPost} title="Posts list JS"/>
-            : <h2 style={{textAlign: "center"}}>Posts was not found</h2>
-        }
-
+        <PostFilter
+            filter={filter}
+            setFilter={setFilter}
+        />
+        <PostList remove={removePost} posts={sortedAndSearchedPosts} title="Posts list JS"/>
     </div>
   );
 }
