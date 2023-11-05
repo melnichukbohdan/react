@@ -3,6 +3,8 @@ import './styles/App.css';
 import PostList from "./components/PostList/PostList";
 import PostForm from "./components/UI/PostForm/PostForm";
 import PostFilter from "./components/PostFilter/PostFilter";
+import MyModal from "./components/UI/MyModal/MyModal";
+import MyButton from "./components/UI/Button/MyButton";
 
 
 function App(factory, deps) {
@@ -13,6 +15,7 @@ function App(factory, deps) {
     ])
 
     const [filter, setFilter] = useState({sort: '', query: ''})
+    const [modal, setModal] = useState(false)
 
     // This logic blocks call the resort of Posts array on entering in the Search input.
     const sortedPosts = useMemo(() => {
@@ -29,6 +32,7 @@ function App(factory, deps) {
 
     const addPostHandler = (newPost) => {
         setPosts([...posts, newPost])
+        setModal(false)
     }
 
     const removePost = (post) => {
@@ -37,7 +41,10 @@ function App(factory, deps) {
 
   return (
     <div className="App">
-        <PostForm onAddPost={addPostHandler} />
+        <MyButton style={{marginTop: '30px'}} onClick={() => setModal(true)}>Add post</MyButton>
+        <MyModal visible={modal} setVisible={setModal}>
+            <PostForm onAddPost={addPostHandler} />
+        </MyModal>
         <hr style={{margin: '15px 0'}} />
         <PostFilter
             filter={filter}
