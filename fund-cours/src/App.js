@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useEffect, useState} from "react";
 import './styles/App.css';
 import PostList from "./components/PostList/PostList";
 import PostForm from "./components/UI/PostForm/PostForm";
@@ -8,13 +8,19 @@ import MyButton from "./components/UI/Button/MyButton";
 import {usePosts} from "./components/hooks/usePosts";
 import PostService from "./components/API/PostService";
 import Loader from "./components/UI/Loader/Loader";
+import {useFetching} from "./components/hooks/useFetching";
 
-function App(factory, deps) {
+function App() {
     const [posts, setPosts] = useState([])
     const [filter, setFilter] = useState({sort: '', query: ''})
     const [modal, setModal] = useState(false)
     const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query)
-    const [isPostsLoading, setIsPostsLoading] = useState(false)
+    const [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
+        const posts = await PostService.getAll();
+        setPosts(posts);
+    })
+
+    // console.log(fetchPosts)
 
     useEffect(() => {
         fetchPosts();
@@ -23,17 +29,6 @@ function App(factory, deps) {
     const addPostHandler = (newPost) => {
         setPosts([...posts, newPost])
         setModal(false)
-    }
-
-    async function fetchPosts() {
-        setIsPostsLoading(true);
-        setTimeout(async () => {
-            const posts = await PostService.getAll();
-            setPosts(posts);
-            setIsPostsLoading(false);
-        }, 1000)
-
-
     }
 
     const removePost = (post) => {
@@ -51,6 +46,9 @@ function App(factory, deps) {
             filter={filter}
             setFilter={setFilter}
         />
+        {postError &&
+            <h1>Error {postError}</h1>
+        }
         {isPostsLoading
             ? <div style={{ display: 'flex', justifyContent: 'center', marginTop: 50}}><Loader /></div>
             : <PostList remove={removePost} posts={sortedAndSearchedPosts} title="Posts list JS"/>
