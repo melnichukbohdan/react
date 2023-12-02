@@ -6,13 +6,15 @@ import PostFilter from "./components/PostFilter/PostFilter";
 import MyModal from "./components/UI/MyModal/MyModal";
 import MyButton from "./components/UI/Button/MyButton";
 import {usePosts} from "./components/hooks/usePosts";
-import axios from "axios";
+import PostService from "./components/API/PostService";
+import Loader from "./components/UI/Loader/Loader";
 
 function App(factory, deps) {
     const [posts, setPosts] = useState([])
     const [filter, setFilter] = useState({sort: '', query: ''})
     const [modal, setModal] = useState(false)
     const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query)
+    const [isPostsLoading, setIsPostsLoading] = useState(false)
 
     useEffect(() => {
         fetchPosts();
@@ -24,8 +26,14 @@ function App(factory, deps) {
     }
 
     async function fetchPosts() {
-        const responce = await axios.get('https://jsonplaceholder.typicode.com/posts')
-        setPosts(responce.data)
+        setIsPostsLoading(true);
+        setTimeout(async () => {
+            const posts = await PostService.getAll();
+            setPosts(posts);
+            setIsPostsLoading(false);
+        }, 1000)
+
+
     }
 
     const removePost = (post) => {
@@ -34,7 +42,6 @@ function App(factory, deps) {
 
   return (
     <div className="App">
-        <button onClick={fetchPosts}>GET POSTS</button>
         <MyButton style={{marginTop: '30px'}} onClick={() => setModal(true)}>Add post</MyButton>
         <MyModal visible={modal} setVisible={setModal}>
             <PostForm onAddPost={addPostHandler} />
@@ -44,7 +51,10 @@ function App(factory, deps) {
             filter={filter}
             setFilter={setFilter}
         />
-        <PostList remove={removePost} posts={sortedAndSearchedPosts} title="Posts list JS"/>
+        {isPostsLoading
+            ? <div style={{ display: 'flex', justifyContent: 'center', marginTop: 50}}><Loader /></div>
+            : <PostList remove={removePost} posts={sortedAndSearchedPosts} title="Posts list JS"/>
+        }
     </div>
   );
 }
